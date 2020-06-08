@@ -121,4 +121,12 @@ dmypy.json
 
 .env
 
+#virtualenv
+env/
+myenv/
+venv/
+
+#migrations
+**/migrations/*
+
 # End of https://www.gitignore.io/api/django
