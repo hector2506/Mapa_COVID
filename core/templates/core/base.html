@@ -42,14 +42,14 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">
+          <a class="nav-link" href="{% url 'accounts:logout' %}">
             <i class="fa fa-sign-out" aria-hidden="true"></i>Sair
           </a>
         </li>
       </ul>
     </div>
     {% else %}
-    <a class="navbar-brand" href="{% url 'login' %}">Mapa da Saúde - COVID19</a>
+    <a class="navbar-brand" href="{% url 'accounts:login' %}">Mapa da Saúde - COVID19</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
       aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
