@@ -29,7 +29,7 @@
 <body>
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     {% if user.is_authenticated %}
-    <a class="navbar-brand" href="{% url 'home' %}">Mapa da Saúde - COVID19</a>
+    <a class="navbar-brand" href="{% url 'patient:home' %}">Mapa da Saúde - COVID19</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
       aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -37,7 +37,7 @@
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">
+          <a class="nav-link" href="{% url 'patient:home' %}">
             <i class="fa fa-user" aria-hidden="true"></i> {{user.nome}}
           </a>
         </li>
