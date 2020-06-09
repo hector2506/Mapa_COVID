@@ -1,14 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'core/base.html' %}
+{% load staticfiles %}
+
 {% block style %}
 <style>
-  #ButtonNotificar {
+  #ButtonLogin,
+  #ButtonCadastro {
     padding: 10px 20px;
     font-size: 20px;
     margin: 5px;
     min-width: 150px;
   }
 
-  #linkNotificar {
+  #linkCadastro {
     color: white;
   }
 
@@ -22,8 +25,7 @@
     overflow: hidden;
   }
 
-  input,
-  select {
+  input {
     min-width: 75%;
   }
 
@@ -31,45 +33,32 @@
     font-weight: bold;
   }
 
-  .input-group {
-    background-color: white;
-  }
-
   .input-group-text {
     background-color: lavender;
   }
-
-  select[readonly] {
-  background: #eee; 
-  pointer-events: none;
-  touch-action: none;
-  }
-
 </style>
 
-<title>Notificação de Agravo</title>
-{% endblock %}
-{% block body %}
-<div align="center">
-  <div class="jumbotron" style="width:75%; height:75%; margin:50px;">
-    <form action="" method='POST'>
-      {% csrf_token %}
-      <!--Form para notificação-->
-      {{notificacao_form.non_field_errors}}
+<title>Home</title>
 
-      {% for field in notificacao_form %}
+{% endblock %}
+
+{% block body %}
+<img src="{% static 'assets/imagem.png' %}" class="mx-auto d-block img-fluid" style="width:30%; height:30%">
+<div align="center">
+  <div class="jumbotron" style="max-width:30%; max-height:30%">
+    <form action="{% url 'login' %}" method='POST'>
+      {% csrf_token %}
+
+      {{form.non_field_errors}}
+
+      {% for field in form %}
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text">{{ field.label_tag}}</span>
         </div>
-        {% if field.name == 'paciente' and paciente_cns %}
-        <select name="paciente" required="" id="id_paciente" readonly="readonly" tabindex="-1" aria-disabled="true">
-          <option value="{{paciente_cns.id}}" selected>{{paciente_cns}}</option>
-        </select>
-        {% else %}
-        {{field}}
-        {% endif %}
+        {{ field }}
+
         <!-- Aqui são mensagens de ajuda -->
         {% if field.help_text %}
         <small style="color: grey;"> {{ field.help_text }}</small>
@@ -85,12 +74,18 @@
       </div>
 
       {% endfor %}
-      <!--Form para notificação-->
-
-      <button type="submit" id="ButtonNotificar" class="btn btn-success btn-lg">
-        Notificar
+      <button type="submit" id="ButtonLogin" class="btn btn-primary btn-lg">
+        Entrar
+      </button>
+    </form>
+    <form action="{% url 'register' %}" method='GET'>
+      <button type="submit" id="ButtonCadastro" class="btn btn-success btn-lg">
+        Cadastre-se
       </button>
     </form>
   </div>
 </div>
+
 {% endblock %}
+
+</html>
