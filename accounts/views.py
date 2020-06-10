@@ -16,7 +16,7 @@ def login_view(request):
         password = form.cleaned_data.get('password')
         user = authenticate(username=cpf,password=password)
         login(request, user)
-        return redirect('home')
+        return redirect('patient:home')
     context = {
         'form': form
     }
@@ -34,7 +34,7 @@ def register_view(request):
                 request, f'{user.nome}, conta criada com sucesso!')
             new_user = authenticate(username=user.cpf, password=password)
             login(request, new_user)
-            return redirect('home')
+            return redirect('patient:home')
     else:
         form = UserRegisterForm()
     context = {
