@@ -10,7 +10,7 @@ class PacienteRegisterForm(forms.ModelForm):
     
     class Meta:
         model = Paciente
-        fields = ['cns','nome','sexo','data_nascimento','ocupacao','gestacao','uf','municipio','cep']
+        fields = ['cns','nome','sexo','data_nascimento','ocupacao','gestacao','uf','municipio']
         widgets = {
             'data_nascimento': DateInput()
         }
