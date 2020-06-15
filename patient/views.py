@@ -67,7 +67,7 @@ def novo_paciente(request):
             request.session['paciente_cns'] = paciente.cns
             messages.success(
                 request, f'Paciente {paciente.nome} registrado com sucesso! Prosseguindo com a notificação:')
-            return redirect('novo_notificacao')
+            return redirect('patient:novo_notificacao')
     else:
         form = PacienteRegisterForm()
     context = {
@@ -91,7 +91,7 @@ def novo_notificacao(request):
                 del request.session['paciente_cns']
                 messages.success(
                     request, f'{user.nome}, notificação realizada com sucesso!')
-                return redirect('notificacao_list')
+                return redirect('patient:notificacao_list')
             else:
                 notificacao = notificacao_form.save(commit=False)
                 user = request.user
@@ -99,7 +99,7 @@ def novo_notificacao(request):
                 notificacao.save()
                 messages.success(
                     request, f'{user.nome}, notificação realizada com sucesso!')
-                return redirect('notificacao_list')
+                return redirect('patient:notificacao_list')
     else:
         notificacao_form = NotificacaoForm()
     if(request.session.get('paciente_cns')):
