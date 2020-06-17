@@ -14,7 +14,10 @@ class PacienteRegisterForm(forms.ModelForm):
         widgets = {
             'data_nascimento': DateInput()
         }
-    
+    def __init__(self, *args, **kwargs):
+        super(PacienteRegisterForm, self).__init__(*args, **kwargs)
+        self.fields['latitude'].widget.attrs['class'] = "d-none"
+        self.fields['longitude'].widget.attrs['class'] = "d-none"
     def clean(self, *args, **kwargs):
         return super(PacienteRegisterForm, self).clean(*args,**kwargs)
 
