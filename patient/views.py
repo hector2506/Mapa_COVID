@@ -70,7 +70,10 @@ def novo_paciente(request):
             return redirect('patient:novo_notificacao')
     else:
         form = PacienteRegisterForm()
+    env = os.environ
+    GOOGLE_API_KEY = env.get('GOOGLE_API_KEY')
     context = {
+        'google_api_key': GOOGLE_API_KEY,
         'form': form
     }
     return render(request, 'patient/novo_paciente.html', context)

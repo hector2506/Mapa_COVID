@@ -10,11 +10,14 @@ class PacienteRegisterForm(forms.ModelForm):
     
     class Meta:
         model = Paciente
-        fields = ['cns','nome','sexo','data_nascimento','ocupacao','gestacao','uf','municipio']
+        fields = ['cns','nome','sexo','data_nascimento','ocupacao','gestacao','uf','municipio', 'latitude', 'longitude']
         widgets = {
             'data_nascimento': DateInput()
         }
-    
+    def __init__(self, *args, **kwargs):
+        super(PacienteRegisterForm, self).__init__(*args, **kwargs)
+        self.fields['latitude'].widget.attrs['class'] = "d-none"
+        self.fields['longitude'].widget.attrs['class'] = "d-none"
     def clean(self, *args, **kwargs):
         return super(PacienteRegisterForm, self).clean(*args,**kwargs)
 
