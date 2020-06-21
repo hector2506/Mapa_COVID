@@ -16,24 +16,25 @@
         <form action="{% url 'site_mapa:mapa' %}" method="POST">
             {% csrf_token %}
             <p>
-                <h5 style="margin-top: 10px;">Consultar o mapa por:</h5>
-                <div class="form-check-inline">
-                    <label class="form-check-label" for="escolha">
-                        <input type="radio" class="form-check-input" id="escolha" name="escolha" value="cep_paciente" checked>
-                        CEP dos pacientes
-                    </label>
-                </div>
-                <div class="form-check-inline">
-                    <label class="form-check-label" for="escolha">
-                        <input type="radio" class="form-check-input" id="escolha" name="escolha" value="area_ubs">
-                        Área das UBS
-                    </label>
-                </div>
-                <br>
-                <button type="submit" class="btn btn-primary" name="notificacao_valor" id="ButtonModal"
-                    style="margin-top: 10px;">
-                    Consultar
-                </button>
+            <h5 style="margin-top: 10px;">Consultar o mapa por:</h5>
+            <div class="form-check-inline">
+                <label class="form-check-label" for="escolha">
+                    <input type="radio" class="form-check-input" id="escolha" name="escolha" value="endereco_paciente"
+                        checked>
+                    Endereço dos pacientes
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label" for="escolha">
+                    <input type="radio" class="form-check-input" id="escolha" name="escolha" value="area_ubs">
+                    Área das UBS
+                </label>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary" name="notificacao_valor" id="ButtonModal"
+                style="margin-top: 10px;">
+                Consultar
+            </button>
             </p>
         </form>
     </div>
@@ -53,12 +54,13 @@
             mapTypeId: 'roadmap'
         });
 
-        {% if escolha_notificacao.0 == "cep_paciente" %}
-        let cepNotificacoes = [] // array que recebe as coordenadas das notificações
+        {% if escolha_notificacao.0 == "endereco_paciente" %}
+        let latitudeNotificacoes = [] // array que recebe a latitude das notificações
+        let longitudeNotificacoes = [] // array que recebe a longitude das notificações
         let situacaoNotificacoes = [] // array de inteiros que serve para armazenar a situação atual das notificações
-        recebeCEP(cepNotificacoes, situacaoNotificacoes)
-        for (i = 0; i < cepNotificacoes.length; i++) {
-            encontraQuadra(cepNotificacoes[i], situacaoNotificacoes[i], map)
+        recebeEndereco(latitudeNotificacoes, longitudeNotificacoes, situacaoNotificacoes)
+        for (i = 0; i < latitudeNotificacoes.length; i++) {
+            marcaPonto(latitudeNotificacoes[i], longitudeNotificacoes[i], situacaoNotificacoes[i], map)
         }
         {% endif %}
 
@@ -70,8 +72,8 @@
         {% endif %}
     }
 
-    // Função para receber os ceps do banco de dados
-    function recebeCEP(cepNotificacoes, situacaoNotificacoes) {
+    // Função para receber a latitude e longitude dos endereços do banco de dados
+    function recebeEndereco(latitudeNotificacoes, longitudeNotificacoes, situacaoNotificacoes) {
         {% for i in notificacoes_mapa %}
         {% if i.situacao_atual == "Suspeito" %}
         situacaoNotificacoes.push(1)
@@ -85,75 +87,119 @@
         {% if i.situacao_atual == "Óbito" %}
         situacaoNotificacoes.push(4)
         {% endif %}
-        cepNotificacoes.push("{{i.paciente.cep}}")
+        latitudeNotificacoes.push("{{i.paciente.latitude}}")
+        longitudeNotificacoes.push("{{i.paciente.longitude}}")
         {% endfor %}
     }
 
-    // Função que envia uma requisição com o cep para a api viacep e retorna um json com o endereço
-    function encontraQuadra(cep, situacao, mapa) {
-        var ourRequest = new XMLHttpRequest()
-        ourRequest.open('GET', 'https://viacep.com.br/ws/' + cep + '/json/')
-        ourRequest.onload = function () {
-            if (ourRequest.status >= 200 && ourRequest.status < 400) {
-                var ourData = JSON.parse(ourRequest.responseText)
-                marcaMapa(ourData.bairro + " " + ourData.logradouro + " " + ourData.complemento, situacao, mapa)
-            } else {
-                window.alert("Conexão com o servidor feita com sucesso, porém ele retornou um erro")
-            }
+    // Função para marcar os pontos no mapa de acordo com as latitudes e longitudes recuperadas do banco
+    function marcaPonto(latitude, longitude, situacao, mapa) {
+        pontoLatLng = { lat: parseFloat(latitude), lng: parseFloat(longitude) }
+        if (situacao == 1) {
+            var marker = new google.maps.Marker({
+                map: mapa,
+                position: pontoLatLng,
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+                }
+            });
         }
-        ourRequest.onerror = function () {
-            window.alert("Um erro ocorreu")
+        if (situacao == 2) {
+            var marker = new google.maps.Marker({
+                map: mapa,
+                position: pontoLatLng,
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                }
+            });
         }
-        ourRequest.send()
+        if (situacao == 3) {
+            var marker = new google.maps.Marker({
+                map: mapa,
+                position: pontoLatLng,
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                }
+            });
+        }
+        if (situacao == 4) {
+            var marker = new google.maps.Marker({
+                map: mapa,
+                position: pontoLatLng,
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+                }
+            });
+        }
     }
 
-    // Função que usa a geocoding api da google para colocar um marcador no endereço indicado
-    function marcaMapa(address, situacao, mapa) {
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ 'address': address }, function (results, status) {
-            if (status === 'OK') {
-                if (situacao == 1) {
-                    var marker = new google.maps.Marker({
-                        map: mapa,
-                        position: results[0].geometry.location,
-                        icon: {
-                            url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-                        }
-                    });
-                }
-                if (situacao == 2) {
-                    var marker = new google.maps.Marker({
-                        map: mapa,
-                        position: results[0].geometry.location,
-                        icon: {
-                            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                        }
-                    });
-                }
-                if (situacao == 3) {
-                    var marker = new google.maps.Marker({
-                        map: mapa,
-                        position: results[0].geometry.location,
-                        icon: {
-                            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-                        }
-                    });
-                }
-                if (situacao == 4) {
-                    var marker = new google.maps.Marker({
-                        map: mapa,
-                        position: results[0].geometry.location,
-                        icon: {
-                            url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
-                        }
-                    });
+    /*
+        // Função que envia uma requisição com o cep para a api viacep e retorna um json com o endereço
+        function encontraQuadra(cep, situacao, mapa) {
+            var ourRequest = new XMLHttpRequest()
+            ourRequest.open('GET', 'https://viacep.com.br/ws/' + cep + '/json/')
+            ourRequest.onload = function () {
+                if (ourRequest.status >= 200 && ourRequest.status < 400) {
+                    var ourData = JSON.parse(ourRequest.responseText)
+                    marcaMapaGeocode(ourData.bairro + " " + ourData.logradouro + " " + ourData.complemento, situacao, mapa)
+                } else {
+                    window.alert("Conexão com o servidor feita com sucesso, porém ele retornou um erro")
                 }
             }
-            else {
-                alert('Geocode was not successful for the following reason: ' + status);
+            ourRequest.onerror = function () {
+                window.alert("Um erro ocorreu")
             }
-        });
-    }
+            ourRequest.send()
+        }
+    
+        // Função que usa a geocoding api da google para colocar um marcador no endereço indicado
+        function marcaMapaGeocode(address, situacao, mapa) {
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === 'OK') {
+                    if (situacao == 1) {
+                        var marker = new google.maps.Marker({
+                            map: mapa,
+                            position: results[0].geometry.location,
+                            icon: {
+                                url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+                            }
+                        });
+                    }
+                    if (situacao == 2) {
+                        var marker = new google.maps.Marker({
+                            map: mapa,
+                            position: results[0].geometry.location,
+                            icon: {
+                                url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                            }
+                        });
+                    }
+                    if (situacao == 3) {
+                        var marker = new google.maps.Marker({
+                            map: mapa,
+                            position: results[0].geometry.location,
+                            icon: {
+                                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                            }
+                        });
+                    }
+                    if (situacao == 4) {
+                        var marker = new google.maps.Marker({
+                            map: mapa,
+                            position: results[0].geometry.location,
+                            icon: {
+                                url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+                            }
+                        });
+                    }
+                }
+                else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+    */
 
     // Função para preencher um array com a string das coordenadas vinda do banco e outro array com as situações atuais 
     function recebeCoordenadas(coordenadasNotificacoes, situacaoNotificacoes) {
@@ -267,6 +313,5 @@
     }
 
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&callback=initMap" async
-    defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&callback=initMap" async defer></script>
 {% endblock %}
