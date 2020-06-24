@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from .forms import *
 from patient.models import Notificacao
+from accounts.models import Estabelecimento
 import os
 
 
@@ -16,7 +17,9 @@ def mapa(request):
     GOOGLE_API_KEY = env.get('GOOGLE_API_KEY')
     escolha_notificacao = request.POST.getlist('escolha')
     notificacoes_mapa = get_list_or_404(Notificacao)
+    ubs_mapa = get_list_or_404(Estabelecimento)
     context = {
+        'ubs_mapa': ubs_mapa,
         'notificacoes_mapa': notificacoes_mapa,
         'escolha_notificacao': escolha_notificacao,
         'google_api_key': GOOGLE_API_KEY

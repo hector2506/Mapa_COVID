@@ -65,10 +65,12 @@
         {% endif %}
 
         {% if escolha_notificacao.0 == "area_ubs" %}
+        //Cria a janela de informação usada para a área da ubs
+        var infowindow = new google.maps.InfoWindow();
         let coordenadasUBS = []
         let situacaoNotificacoes = []
         recebeCoordenadas(coordenadasUBS, situacaoNotificacoes)
-        montaPoligonos(coordenadasUBS, situacaoNotificacoes, map)
+        montaPoligonos(coordenadasUBS, situacaoNotificacoes, infowindow, map)
         {% endif %}
     }
 
@@ -241,74 +243,111 @@
     }
 
     // Função para criar e desenhar os poligonos no mapa
-    function montaPoligonos(coordenadasNotificacoes, situacaoNotificacoes, mapa) {
-        let delimiter_coordenadas = [] // array para receber as coordenadas devidamente organizadas
+    function montaPoligonos(coordenadasNotificacoes, situacaoNotificacoes, infowindow, mapa) {
+        let = coordenadasbrutas = [] // array para receber as coordenadas sem variáveis repetidas
+        let ubsNotificacoes = [] // array que recebe as coordenadas de todas as UBS do banco
+        let suspeito = [] // array para receber a quantidade de casos suspeitos na área de uma UBS
+        let confirmado = [] // array para receber a quantidade de casos confirmados na área de uma UBS
+        let curado = [] // array para receber a quantidade de casos curados na área de uma UBS
+        let obito = [] // array para receber a quantidade de casos de obito na área de uma UBS
+        let flag = 0
+
+        {% for g in ubs_mapa %}
+        ubsNotificacoes.push("{{g.coordenadas}}")
+        {% endfor %}
+
+        for (let i = 0; i < ubsNotificacoes.length; i++) {
+            suspeito[i] = 0
+            confirmado[i] = 0
+            obito[i] = 0
+            curado[i] = 0
+            coordenadasbrutas[i] = 0
+        }
+
+        for (let i = 0; i < coordenadasNotificacoes.length; i++) {
+            for (let j = 0; j < ubsNotificacoes.length; j++) {
+                if (coordenadasNotificacoes[i] == ubsNotificacoes[j]) {
+                    if (situacaoNotificacoes[i] == 1) {
+                        suspeito[j]++
+                    }
+                    if (situacaoNotificacoes[i] == 2) {
+                        confirmado[j]++
+                    }
+                    if (situacaoNotificacoes[i] == 3) {
+                        curado[j]++
+                    }
+                    if (situacaoNotificacoes[i] == 4) {
+                        obito[j]++
+                    }
+                    for (let k = 0; k < coordenadasbrutas.length; k++) {
+                        if (coordenadasbrutas[k] == coordenadasNotificacoes[i]) {
+                            flag = 1
+                        }
+                    }
+                    if (flag == 0) {
+                        coordenadasbrutas[j] = coordenadasNotificacoes[i];
+                    }
+                    flag = 0
+                }
+            }
+        }
 
         // loop para construir o array com as coordenadas devidamente organizadas
-        for (j in coordenadasNotificacoes) {
-            delimiter_coordenadas.push(buildCoordinatesArrayFromString(coordenadasNotificacoes[j]));
-        }
-
-        array_poligono = [] // array com os poligonos a serem desenhados no mapa
-
-        // For para construir o poligono a ser inserido no mapa.
-        for (let z = 0; z < delimiter_coordenadas.length; z++) {
-
-            // Caso a situação seja suspeito, o poligono é pintado de amarelo
-            if (situacaoNotificacoes[z] == 1) {
-                var ubs_poligono = new google.maps.Polygon({
-                    paths: delimiter_coordenadas[z],
-                    strokeColor: '#FFFF00',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 3,
-                    fillColor: '#FFFF00',
-                    fillOpacity: 0.35
+        for (let i in coordenadasbrutas) {
+            if (coordenadasbrutas[i] != 0) {
+                // Pintar a área da ubs de amarelo, pois existem mais casos suspeitos
+                if ((suspeito[i] > confirmado[i]) && (suspeito[i] > curado[i]) && (suspeito[i] > obito[i])) {
+                    var ubs_poligono = new google.maps.Polygon({
+                        paths: buildCoordinatesArrayFromString(coordenadasbrutas[i]),
+                        strokeColor: '#FFFF00',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 3,
+                        fillColor: '#FFFF00',
+                        fillOpacity: 0.35
+                    });
+                }
+                // Pintar a área da ubs de vermelho, pois existem mais casos confirmados
+                if ((confirmado[i] > suspeito[i]) && (confirmado[i] > curado[i]) && (confirmado[i] > obito[i])) {
+                    var ubs_poligono = new google.maps.Polygon({
+                        paths: buildCoordinatesArrayFromString(coordenadasbrutas[i]),
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 3,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.35
+                    });
+                }
+                // Pintar a área da ubs de azul, pois existem mais casos curados
+                if ((curado[i] > suspeito[i]) && (curado[i] > confirmado[i]) && (curado[i] > obito[i])) {
+                    var ubs_poligono = new google.maps.Polygon({
+                        paths: buildCoordinatesArrayFromString(coordenadasbrutas[i]),
+                        strokeColor: '#0000FF',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 3,
+                        fillColor: '#0000FF',
+                        fillOpacity: 0.35
+                    });
+                }
+                // Pintar a área da ubs de roxo, pois existem mais casos de óbito
+                if ((obito[i] > suspeito[i]) && (obito[i] > confirmado[i]) && (obito[i] > curado[i])) {
+                    var ubs_poligono = new google.maps.Polygon({
+                        paths: buildCoordinatesArrayFromString(coordenadasbrutas[i]),
+                        strokeColor: '#800080',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 3,
+                        fillColor: '#800080',
+                        fillOpacity: 0.35
+                    });
+                }
+                ubs_poligono.setMap(mapa);
+                ubs_poligono.addListener('click', function (event) {
+                    var contentString = "Suspeitos: " + String(suspeito[i]) + "<br>" + "Confirmados: " + String(confirmado[i]) + "<br>" +
+                        "Curados:" + String(curado[i]) + "<br>" + "Óbitos: " + String(obito[i]);
+                    infowindow.setContent(contentString);
+                    infowindow.setPosition(event.latLng);
+                    infowindow.open(mapa);
                 });
             }
-
-            // Caso a situação seja confirmado, o poligono é pintado de vermelho
-            if (situacaoNotificacoes[z] == 2) {
-                var ubs_poligono = new google.maps.Polygon({
-                    paths: delimiter_coordenadas[z],
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 3,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.35
-                });
-            }
-
-            // Caso a situação seja curado, o poligono é pintado de azul
-            if (situacaoNotificacoes[z] == 3) {
-                var ubs_poligono = new google.maps.Polygon({
-                    paths: delimiter_coordenadas[z],
-                    strokeColor: '#0000FF',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 3,
-                    fillColor: '#0000FF',
-                    fillOpacity: 0.35
-                });
-            }
-
-            // Caso a situação seja óbito, o poligono é pintado de roxo
-            if (situacaoNotificacoes[z] == 4) {
-                var ubs_poligono = new google.maps.Polygon({
-                    paths: delimiter_coordenadas[z],
-                    strokeColor: '#800080',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 3,
-                    fillColor: '#800080',
-                    fillOpacity: 0.35
-                });
-            }
-
-            // Insere no array de poligonos o poligono criado
-            array_poligono.push(ubs_poligono)
-        }
-
-        // Desenha todos os poligonos criados no mapa
-        for (w in array_poligono) {
-            array_poligono[w].setMap(mapa);
         }
     }
 
