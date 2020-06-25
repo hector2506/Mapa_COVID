@@ -31,7 +31,7 @@ def notificacao_list(request):
         notificacao = get_object_or_404(Notificacao, id=request.POST['notificacao_valor'])
         notificacao.situacao_atual = request.POST['situacao_notificacao']
         notificacao.save()
-    notificacoes = gerenciar_paginacao(request, Notificacao.objects.filter(usuario=request.user))
+    notificacoes = gerenciar_paginacao(request, Notificacao.objects.filter(usuario=request.user).order_by('unidade_saude'))
     lista_notificacoes = Notificacao.objects.all()
     if (notificacoes and lista_notificacoes):
         context = {
@@ -44,7 +44,7 @@ def notificacao_list(request):
 
 @login_required
 def paciente_list(request):
-    pacientes = gerenciar_paginacao(request, Paciente.objects.filter(ubs=request.user.vinculo))
+    pacientes = gerenciar_paginacao(request, Paciente.objects.filter(ubs=request.user.vinculo).order_by('nome'))
     lista_notificacoes = Notificacao.objects.all()
     if (pacientes and lista_notificacoes):
         context = {
