@@ -34,7 +34,7 @@ class Paciente(models.Model):
     sexo = models.CharField(max_length=25, choices=sexo, default="Ignorado")
     data_nascimento = models.DateField(auto_now=False, auto_now_add=False, default=None)
     ocupacao = models.CharField(max_length=50, default=None)
-    gestacao = models.CharField(max_length=25, choices=gestacao, default="9")
+    gestacao = models.CharField(max_length=25, choices=gestacao, default="6")
     uf = models.CharField(max_length=25, choices=uf, default="PI")
     municipio = models.CharField(max_length=25, default=None)
     latitude = models.CharField(max_length=255,null=True,blank=True, default=None)
@@ -54,8 +54,8 @@ class Notificacao(models.Model):
     DOENCAS_PRE_EXISTENTES = ((1, 'Diabetes'),
                (2, 'Doenças Cardiovasculares'),
                (3, 'Doenças Respiratórias'),
-               (4, 'Doenca Renal Cronica'),
-               (5, 'Hipertensao Arterial'))
+               (4, 'Doença Renal Crônica'),
+               (5, 'Hipertensão Arterial'))
 
     situacao = [
         ("Suspeito", "Suspeito"),
