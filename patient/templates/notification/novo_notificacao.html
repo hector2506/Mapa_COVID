@@ -68,7 +68,19 @@
           <option value="{{paciente_cns.id}}" selected>{{paciente_cns}}</option>
         </select>
         {% else %}
+        {% if field.name == 'unidade_saude' %}
+        <select name="unidade_saude" required="" id="id_unidade_saude">
+          {% for i in lista_ubs %}
+          {% if i == user.vinculo %}
+          <option value="{{i.id}}" selected>{{i}}</option>
+          {% else %}
+          <option value="{{i.id}}">{{i}}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+        {% else %}
         {{field}}
+        {% endif %}
         {% endif %}
         <!-- Aqui são mensagens de ajuda -->
         {% if field.help_text %}
