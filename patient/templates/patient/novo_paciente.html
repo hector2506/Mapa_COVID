@@ -153,7 +153,7 @@
         {% endfor %}
         {{form.latitude}}
         {{form.longitude}}
-        <button type="submit" id="ButtonCadastro" class="btn btn-success btn-lg d-inline float-right" disabled>
+        <button type="submit" id="ButtonCadastro" class="btn btn-success btn-lg d-inline float-right" style="visibility:hidden">
           Finalizar
         </button>
       </form>
@@ -309,6 +309,9 @@
     function anterior(){
       document.getElementById('1').className= ""
       document.getElementById('2').className= "d-none"
+      if( $("#id_longitude").val() != ""){
+        document.getElementById("ButtonCadastro").style.visibility = "visible"
+      }
     }
 
     function finalizar(){

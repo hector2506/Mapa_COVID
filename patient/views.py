@@ -105,14 +105,17 @@ def novo_notificacao(request):
                 return redirect('patient:notificacao_list')
     else:
         notificacao_form = NotificacaoForm()
+        lista_ubs = Estabelecimento.objects.all()
     if(request.session.get('paciente_cns')):
         context = {
             'notificacao_form': notificacao_form,
-            'paciente_cns': get_object_or_404(Paciente, cns=request.session.get('paciente_cns'))
+            'paciente_cns': get_object_or_404(Paciente, cns=request.session.get('paciente_cns')),
+            'lista_ubs': lista_ubs
         }
     else:
         context = {
             'notificacao_form': notificacao_form,
+            'lista_ubs': lista_ubs
         }
     return render(request, 'notification/novo_notificacao.html', context)
     
