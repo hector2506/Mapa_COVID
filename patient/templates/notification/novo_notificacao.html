@@ -40,18 +40,17 @@
   }
 
   select[readonly] {
-  background: #eee; 
-  pointer-events: none;
-  touch-action: none;
+    background: #eee;
+    pointer-events: none;
+    touch-action: none;
   }
-
 </style>
 
 <title>Notificação de Agravo</title>
 {% endblock %}
 {% block body %}
-<div align="center">
-  <div class="jumbotron" style="width:75%; height:75%; margin:50px;">
+<div style="text-align: center">
+  <div class="jumbotron mx-auto" style="width:75%; height:75%; margin:50px;">
     <form action="" method='POST'>
       {% csrf_token %}
       <!--Form para notificação-->
