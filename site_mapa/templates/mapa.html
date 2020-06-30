@@ -1,44 +1,103 @@
 {% extends 'core/base.html' %}
-{% block style %}
-<style>
-    #map {
-        width: 85%;
-        min-height: 650px;
-        margin: 20px;
-    }
-</style>
 
+{% block style %}
+html,
+body {
+height: 100%;
+}
+
+#map {
+width: 75%;
+height: 65%;
+margin: 20px;
+}
+
+.box {
+float: left;
+height: 17px;
+width: 17px;
+margin-bottom: 10px;
+margin-left: 5px;
+margin-right: 5px;
+border: 1px solid black;
+clear: both;
+}
+
+.yellow {
+background-color: #FFFF00;
+}
+
+.red {
+background-color: #FF0000;
+}
+
+.blue {
+background-color: #0000FF;
+}
+
+.purple {
+background-color: #800080;
+}
+{% endblock %}
+
+{%block title %}
 <title>Mapa da Saúde</title>
 {% endblock %}
+
+{% block navbar %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'patient:home' %}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'patient:notificacao_list' %}">Notificações</a>
+</li>
+{% endblock %}
+
 {% block body %}
-<div align="center">
-    <div style="text-align: center;">
-        <form action="{% url 'site_mapa:mapa' %}" method="POST">
-            {% csrf_token %}
-            <p>
-            <h5 style="margin-top: 10px;">Consultar o mapa por:</h5>
-            <div class="form-check-inline">
-                <label class="form-check-label" for="escolha">
-                    <input type="radio" class="form-check-input" id="escolha" name="escolha" value="endereco_paciente"
-                        checked>
-                    Endereço dos pacientes
-                </label>
-            </div>
-            <div class="form-check-inline">
-                <label class="form-check-label" for="escolha">
-                    <input type="radio" class="form-check-input" id="escolha" name="escolha" value="area_ubs">
-                    Área das UBS
-                </label>
-            </div>
-            <br>
-            <button type="submit" class="btn btn-primary" name="notificacao_valor" id="ButtonModal"
-                style="margin-top: 10px;">
-                Consultar
-            </button>
-            </p>
-        </form>
+<div style="text-align: center;">
+    <form action="{% url 'site_mapa:mapa' %}" method="POST">
+        {% csrf_token %}
+        <p>
+        <h5 style="margin-top: 10px;">Consultar o mapa por:</h5>
+        <div class="form-check-inline">
+            <label class="form-check-label" for="escolha">
+                <input type="radio" class="form-check-input" id="escolha" name="escolha" value="endereco_paciente"
+                    checked>
+                Endereço dos pacientes
+            </label>
+        </div>
+        <div class="form-check-inline">
+            <label class="form-check-label" for="escolha">
+                <input type="radio" class="form-check-input" id="escolha" name="escolha" value="area_ubs">
+                Área das UBS
+            </label>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary" name="notificacao_valor" id="ButtonModal"
+            style="margin-top: 10px;">
+            Consultar
+        </button>
+        </p>
+    </form>
+</div>
+<div id="map" class="mx-auto"></div>
+<div id="helptext" style="background-color:#e9ecef; padding: 20px; border: 1px solid; font-size: 14px;">
+    <h6>Legenda das cores:</h6>
+    <div style="display: inline-block;">
+        <div class='box yellow'></div> Suspeito
     </div>
-    <div id="map"></div>
+    <br>
+    <div style="display: inline-block;">
+        <div class='box red'></div> Confirmado
+    </div>
+    <br>
+    <div style="display: inline-block;">
+        <div class='box blue'></div> Curado
+    </div>
+    <br>
+    <div style="display: inline-block;">
+        <div class='box purple'></div> Óbito
+    </div>
 </div>
 <script>
 
@@ -53,7 +112,7 @@
             zoom: 11,
             mapTypeId: 'roadmap'
         });
-
+        map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById('helptext'));
         {% if escolha_notificacao.0 == "endereco_paciente" %}
         let latitudeNotificacoes = [] // array que recebe a latitude das notificações
         let longitudeNotificacoes = [] // array que recebe a longitude das notificações
@@ -378,7 +437,7 @@
                 }
 
                 ubs_poligono.setMap(mapa);
-                
+
                 // Evento para fechar a infowindow caso o usuário clique num lugar do mapa sem ser a área de alguma UBS
                 google.maps.event.addListener(mapa, 'click', function () {
                     infowindow.close();
@@ -388,8 +447,8 @@
                 ubs_poligono.addListener('click', function (event) {
                     var contentString = '<div id="content">' + "<h6>" + String(nomesFinais[i]) + "</h6>" + "Casos suspeitos: " +
                         String(suspeito[i]) + "<br><br>" + "Casos confirmados: " + String(confirmado[i]) + "<br><br>" +
-                        "Casos curados: " + String(curado[i]) + "<br><br>" + "Número de óbitos: " + String(obito[i]) + "<br><br>" + 
-                        "Total de notificações: " + String(suspeito[i] + confirmado[i] + curado[i] + obito[i]) +'</div>';
+                        "Casos curados: " + String(curado[i]) + "<br><br>" + "Número de óbitos: " + String(obito[i]) + "<br><br>" +
+                        "Total de notificações: " + String(suspeito[i] + confirmado[i] + curado[i] + obito[i]) + '</div>';
                     infowindow.setContent(contentString);
                     infowindow.setPosition(event.latLng);
                     infowindow.open(mapa);

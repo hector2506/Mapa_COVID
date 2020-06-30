@@ -1,30 +1,40 @@
 {% extends 'core/base.html' %}
 {% load staticfiles%}
+
 {% block style %}
-<style>
-    #ButtonMapa,
-    #ButtonAgravo,
-    #ButtonPaciente {
-        padding: 10px 20px;
-        font-size: 20px;
-        margin: 5px;
-        min-width: 100px;
-    }
+#ButtonMapa,
+#ButtonAgravo,
+#ButtonPaciente {
+padding: 10px 20px;
+font-size: 20px;
+margin: 5px;
+min-width: 100px;
+}
 
-    #linkCadastro {
-        color: white;
-    }
+#linkCadastro {
+color: white;
+}
 
-    table {
-        background-color: white;
-    }
-</style>
+table {
+background-color: white;
+}
+{% endblock %}
 
+{% block title %}
 <title>Lista dos Pacientes da UBS</title>
 {% endblock %}
+
+{% block navbar %}
+<li class="nav-item active">
+    <a class="nav-link" href="{% url 'patient:home' %}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'patient:notificacao_list' %}">Notificações</a>
+</li>
+{% endblock %}
 {% block body %}
-<div align="center">
-    <div class="jumbotron" style="max-width:75%; max-height:75%; margin:50px;">
+<div style="text-align: center">
+    <div class="jumbotron mx-auto" style="max-width:75%; max-height:75%; margin:50px;">
         {% if pacientes %}
         <div style=" overflow-y : scroll; height: 300px;">
             <table class="table table-bordered">
