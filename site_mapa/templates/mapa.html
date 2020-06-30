@@ -1,42 +1,58 @@
 {% extends 'core/base.html' %}
+
 {% block style %}
-<style>
-    #map {
-        width: 85%;
-        min-height: 650px;
-        margin: 20px;
-    }
+html,
+body {
+height: 100%;
+}
 
-    .box {
-        float: left;
-        height: 17px;
-        width: 17px;
-        margin-bottom: 10px;
-        margin-left: 5px;
-        margin-right: 5px;
-        border: 1px solid black;
-        clear: both;
-    }
+#map {
+width: 75%;
+height: 65%;
+margin: 20px;
+}
 
-    .yellow {
-        background-color: #FFFF00;
-    }
+.box {
+float: left;
+height: 17px;
+width: 17px;
+margin-bottom: 10px;
+margin-left: 5px;
+margin-right: 5px;
+border: 1px solid black;
+clear: both;
+}
 
-    .red {
-        background-color: #FF0000;
-    }
+.yellow {
+background-color: #FFFF00;
+}
 
-    .blue {
-        background-color: #0000FF;
-    }
+.red {
+background-color: #FF0000;
+}
 
-    .purple {
-        background-color: #800080;
-    }
-</style>
+.blue {
+background-color: #0000FF;
+}
 
+.purple {
+background-color: #800080;
+}
+{% endblock %}
+
+{%block title %}
 <title>Mapa da Saúde</title>
 {% endblock %}
+
+{% block navbar %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'patient:home' %}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'patient:notificacao_list' %}">Notificações</a>
+</li>
+{% endblock %}
+
 {% block body %}
 <div style="text-align: center;">
     <form action="{% url 'site_mapa:mapa' %}" method="POST">

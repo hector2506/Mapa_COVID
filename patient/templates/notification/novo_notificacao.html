@@ -1,52 +1,62 @@
 {% extends 'core/base.html' %}
+
 {% block style %}
-<style>
-  #ButtonNotificar {
-    padding: 10px 20px;
-    font-size: 20px;
-    margin: 5px;
-    min-width: 150px;
-  }
+#ButtonNotificar {
+padding: 10px 20px;
+font-size: 20px;
+margin: 5px;
+min-width: 150px;
+}
 
-  #linkNotificar {
-    color: white;
-  }
+#linkNotificar {
+color: white;
+}
 
-  .input-group-prepend {
-    max-width: 100%;
-    min-width: 25%;
-  }
+.input-group-prepend {
+max-width: 100%;
+min-width: 25%;
+}
 
-  .input-group-prepend span {
-    width: 100%;
-    overflow: hidden;
-  }
+.input-group-prepend span {
+width: 100%;
+overflow: hidden;
+}
 
-  input,
-  select {
-    min-width: 75%;
-  }
+input,
+select {
+min-width: 75%;
+}
 
-  label {
-    font-weight: bold;
-  }
+label {
+font-weight: bold;
+}
 
-  .input-group {
-    background-color: white;
-  }
+.input-group {
+background-color: white;
+}
 
-  .input-group-text {
-    background-color: lavender;
-  }
+.input-group-text {
+background-color: lavender;
+}
 
-  select[readonly] {
-    background: #eee;
-    pointer-events: none;
-    touch-action: none;
-  }
-</style>
+select[readonly] {
+background: #eee;
+pointer-events: none;
+touch-action: none;
+}
+{% endblock %}
 
+{% block title %}
 <title>Notificação de Agravo</title>
+{% endblock %}
+
+{% block navbar %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'patient:home' %}">Home</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'patient:notificacao_list' %}">Notificações</a>
+</li>
 {% endblock %}
 {% block body %}
 <div style="text-align: center">

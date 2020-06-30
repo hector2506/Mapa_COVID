@@ -1,117 +1,128 @@
 {% extends 'core/base.html' %}
+
 {% block style %}
-<style>
-  button {
-    padding: 10px 20px;
-    font-size: 20px;
-    margin: 5px;
-    min-width: 150px;
-  }
+button {
+padding: 10px 20px;
+font-size: 20px;
+margin: 5px;
+min-width: 150px;
+}
 
-  #linkCadastro {
-    color: white;
-  }
+#linkCadastro {
+color: white;
+}
 
-  .input-group-prepend {
-    max-width: 100%;
-    min-width: 25%;
-  }
+.input-group-prepend {
+max-width: 100%;
+min-width: 25%;
+}
 
-  .input-group-prepend span {
-    width: 100%;
-    overflow: hidden;
-  }
+.input-group-prepend span {
+width: 100%;
+overflow: hidden;
+}
 
-  input,
-  select {
-    min-width: 75%;
-  }
+input,
+select {
+min-width: 75%;
+}
 
-  label {
-    font-weight: bold;
-  }
+label {
+font-weight: bold;
+}
 
-  .input-group-text {
-    background-color: lavender;
-  }
+.input-group-text {
+background-color: lavender;
+}
 
-  #map {
-    height: 90%;
-    margin-bottom 5% !important;
-  }
+#map {
+height: 90%;
+border: 1px solid black;
+}
 
-  /* Optional: Makes the sample page fill the window. */
-  html,
-  body {
-    height: 100%;
-    padding: 0;
-  }
+/* Optional: Makes the sample page fill the window. */
+html,
+body {
+height: 100%;
+padding: 0;
+}
 
-  #description {
-    font-family: Roboto;
-    font-size: 15px;
-    font-weight: 300;
-  }
+#description {
+font-family: Roboto;
+font-size: 15px;
+font-weight: 300;
+}
 
-  #infowindow-content .title {
-    font-weight: bold;
-  }
+#infowindow-content .title {
+font-weight: bold;
+}
 
-  #infowindow-content {
-    display: none;
-  }
+#infowindow-content {
+display: none;
+}
 
-  #map #infowindow-content {
-    display: inline;
-  }
+#map #infowindow-content {
+display: inline;
+}
 
-  .pac-card {
-    margin: 10px 10px 0 0;
-    border-radius: 2px 0 0 2px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    outline: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    background-color: #fff;
-    font-family: Roboto;
-  }
+.pac-card {
+margin: 10px 10px 0 0;
+border-radius: 2px 0 0 2px;
+box-sizing: border-box;
+-moz-box-sizing: border-box;
+outline: none;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+background-color: #fff;
+font-family: Roboto;
+}
 
-  #pac-container {
-    padding-bottom: 12px;
-    margin-right: 12px;
-  }
+#pac-container {
+padding-bottom: 12px;
+margin-right: 12px;
+}
 
-  #input_map {
-    background-color: #fff;
-    font-family: Roboto;
-    font-size: 15px;
-    font-weight: 300;
-    margin-top: 12px;
-    margin-left: 12px;
-    padding: 0 11px 0 13px;
-    text-overflow: ellipsis;
-    width: 400px;
-  }
+#input_map {
+background-color: #fff;
+font-family: Roboto;
+font-size: 15px;
+font-weight: 300;
+margin-top: 12px;
+margin-left: 12px;
+padding: 0 11px 0 13px;
+text-overflow: ellipsis;
+width: 400px;
+}
 
-  #input_map:focus {
-    border-color: #4d90fe;
-  }
+#input_map:focus {
+border-color: #4d90fe;
+}
 
-  #title {
-    color: #fff;
-    background-color: #4d90fe;
-    font-size: 25px;
-    font-weight: 500;
-    padding: 6px 12px;
-  }
+#title {
+color: #fff;
+background-color: #4d90fe;
+font-size: 25px;
+font-weight: 500;
+padding: 6px 12px;
+}
 
-  .span-button {
-    margin
-  }
-</style>
+.span-button {
+margin
+}
+{% endblock %}
 
+{% block title %}
 <title>Cadastro de Paciente</title>
 {% endblock %}
+
+{% block navbar %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'patient:home' %}">Home</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'patient:notificacao_list' %}">Notificações</a>
+</li>
+{% endblock %}
+
 {% block body %}
 <div id="1">
   <div class="jumbotron mx-auto" style="width:75%; height:75%; margin:50px;">
@@ -163,7 +174,7 @@
   </div>
 </div>
 
-<div class="jumbotron mx-auto d-none" id="2" style="width:75%; height:90%; margin:50px;">
+<div class="jumbotron mx-auto d-none" id="2" style="width:75%; height:75%; margin:50px;">
 
   <div class="pac-card" id="pac-card">
     <div>
