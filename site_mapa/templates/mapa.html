@@ -51,6 +51,9 @@ background-color: #800080;
 <li class="nav-item">
     <a class="nav-link" href="{% url 'patient:notificacao_list' %}">Notificações</a>
 </li>
+<li class="nav-item active">
+    <a class="nav-link" href="{% url 'site_mapa:mapa' %}">Consultar o Mapa</a>
+</li>
 {% endblock %}
 
 {% block body %}
@@ -82,17 +85,17 @@ background-color: #800080;
 </div>
 <div id="map" class="mx-auto"></div>
 <div id="helptext" style="background-color:#e9ecef; padding: 20px; border: 1px solid; font-size: 14px;">
-    <h6>Legenda das cores:</h6>
+    <h6>Legenda:</h6>
     <div style="display: inline-block;">
-        <div class='box yellow'></div> Suspeito
+        <div class='box yellow'></div> Caso Suspeito
     </div>
     <br>
     <div style="display: inline-block;">
-        <div class='box red'></div> Confirmado
+        <div class='box red'></div> Caso Confirmado
     </div>
     <br>
     <div style="display: inline-block;">
-        <div class='box blue'></div> Curado
+        <div class='box blue'></div> Cura
     </div>
     <br>
     <div style="display: inline-block;">
@@ -445,10 +448,9 @@ background-color: #800080;
 
                 // Evento para exibir a infowindow com o nome da UBS e a quantidade cada um dos tipos de notificações
                 ubs_poligono.addListener('click', function (event) {
-                    var contentString = '<div id="content">' + "<h6>" + String(nomesFinais[i]) + "</h6>" + "Casos suspeitos: " +
+                    var contentString = '<div id="content" style="text-align: center">' + "<h6>" + String(nomesFinais[i]) + "</h6>" + "Casos suspeitos: " +
                         String(suspeito[i]) + "<br><br>" + "Casos confirmados: " + String(confirmado[i]) + "<br><br>" +
-                        "Casos curados: " + String(curado[i]) + "<br><br>" + "Número de óbitos: " + String(obito[i]) + "<br><br>" +
-                        "Total de notificações: " + String(suspeito[i] + confirmado[i] + curado[i] + obito[i]) + '</div>';
+                        "Casos curados: " + String(curado[i]) + "<br><br>" + "Número de óbitos: " + String(obito[i]) + "<br><br>" + '</div>';
                     infowindow.setContent(contentString);
                     infowindow.setPosition(event.latLng);
                     infowindow.open(mapa);
