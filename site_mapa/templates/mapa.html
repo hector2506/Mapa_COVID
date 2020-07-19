@@ -61,19 +61,19 @@ background-color: #800080;
 <div id="helptext" style="background-color:#e9ecef; padding: 20px; border: 1px solid; font-size: 14px;">
     <h6>Legenda:</h6>
     <div style="display: inline-block;">
-        <div class='box yellow'></div> Caso Suspeito
+        <div class='box yellow' onclick="suspeito()"></div> <div style="display: inline;" onclick="suspeito()">Caso Suspeito</div>
     </div>
     <br>
     <div style="display: inline-block;">
-        <div class='box red'></div> Caso Confirmado
+        <div class='box red' onclick="confirmado()"></div> <div style="display: inline;" onclick="confirmado()">Caso Confirmado</div>
     </div>
     <br>
     <div style="display: inline-block;">
-        <div class='box blue'></div> Cura
+        <div class='box blue' onclick="cura()"></div> <div style="display: inline;" onclick="cura()">Cura</div>
     </div>
     <br>
     <div style="display: inline-block;">
-        <div class='box purple'></div> Óbito
+        <div class='box purple' onclick="obito()"></div> <div style="display: inline;" onclick="obito()">Óbito</div>
     </div>
 </div>
 <script>
@@ -86,7 +86,7 @@ background-color: #800080;
                 lat: -5.0364390,
                 lng: -42.822612
             },
-            zoom: 11,
+            zoom: 13,
             mapTypeId: 'roadmap'
         });
         map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById('helptext'));
@@ -158,8 +158,6 @@ background-color: #800080;
     function montaPoligonos(coordenadasNotificacoes, situacaoNotificacoes, infowindow, mapa) {
         let ubsCoordenadas = [] // array que recebe as coordenadas de todas as UBS do banco
         let ubsNomes = [] // array que recebe os nomes de todas as UBS do banco
-        let coordenadasFinais = [] // array para receber as coordenadas das UBS sem repetições
-        let nomesFinais = [] // array para receber os nomes das UBS sem repetições
         let suspeito = [] // array para receber a quantidade de casos suspeitos na área de uma UBS
         let confirmado = [] // array para receber a quantidade de casos confirmados na área de uma UBS
         let curado = [] // array para receber a quantidade de casos curados na área de uma UBS
@@ -178,8 +176,6 @@ background-color: #800080;
             confirmado[i] = 0
             obito[i] = 0
             curado[i] = 0
-            coordenadasFinais[i] = 0
-            nomesFinais[i] = 0
         }
 
         // loop para contabilizar os casos de cada ubs e preencher o array coordenadasFinais com a área das UBS que possuem casos
@@ -198,42 +194,30 @@ background-color: #800080;
                     if (situacaoNotificacoes[i] == 4) {
                         obito[j]++
                     }
-                    for (let k = 0; k < coordenadasFinais.length; k++) {
-                        if (coordenadasFinais[k] == ubsCoordenadas[j]) {
-                            flag = 1
-                        }
-                    }
-                    if (flag == 0) {
-                        coordenadasFinais[j] = ubsCoordenadas[j]
-                        nomesFinais[j] = ubsNomes[j]
-                    }
-                    flag = 0
                 }
             }
         }
 
         // loop para desenhar as áreas das UBS no mapa e preparar o evento caso o usuário clique na área 
-        for (let i in coordenadasFinais) {
-            if (coordenadasFinais[i] != 0 && nomesFinais[i] != 0) {
-                var ubs_poligono = criaPoligono(buildCoordinatesArrayFromString(coordenadasFinais[i]), '#00ff99')
+        for (let i in ubsCoordenadas) {
+            var ubs_poligono = criaPoligono(buildCoordinatesArrayFromString(ubsCoordenadas[i]), '#00cc00')
 
-                ubs_poligono.setMap(mapa);
+            ubs_poligono.setMap(mapa);
 
-                // Evento para fechar a infowindow caso o usuário clique num lugar do mapa sem ser a área de alguma UBS
-                google.maps.event.addListener(mapa, 'click', function () {
-                    infowindow.close();
-                });
+            // Evento para fechar a infowindow caso o usuário clique num lugar do mapa sem ser a área de alguma UBS
+            google.maps.event.addListener(mapa, 'click', function () {
+                infowindow.close();
+            });
 
-                // Evento para exibir a infowindow com o nome da UBS e a quantidade cada um dos tipos de notificações
-                ubs_poligono.addListener('click', function (event) {
-                    var contentString = '<div id="content" style="text-align: center">' + "<h6>" + String(nomesFinais[i]) + "</h6>" + "Casos suspeitos: " +
-                        String(suspeito[i]) + "<br><br>" + "Casos confirmados: " + String(confirmado[i]) + "<br><br>" +
-                        "Casos curados: " + String(curado[i]) + "<br><br>" + "Número de óbitos: " + String(obito[i]) + "<br><br>" + '</div>';
-                    infowindow.setContent(contentString);
-                    infowindow.setPosition(event.latLng);
-                    infowindow.open(mapa);
-                });
-            }
+            // Evento para exibir a infowindow com o nome da UBS e a quantidade cada um dos tipos de notificações
+            ubs_poligono.addListener('click', function (event) {
+                var contentString = '<div id="content" style="text-align: center">' + "<h6>" + String(ubsNomes[i]) + "</h6>" + "Casos suspeitos: " +
+                    String(suspeito[i]) + "<br><br>" + "Casos confirmados: " + String(confirmado[i]) + "<br><br>" +
+                    "Casos curados: " + String(curado[i]) + "<br><br>" + "Número de óbitos: " + String(obito[i]) + "<br><br>" + '</div>';
+                infowindow.setContent(contentString);
+                infowindow.setPosition(event.latLng);
+                infowindow.open(mapa);
+            });
         }
     }
 
@@ -278,6 +262,18 @@ background-color: #800080;
         }
     }
 
+    function suspeito(){
+        console.log("Caso Suspeito")
+    }
+    function confirmado(){
+        console.log("Caso Confirmado")
+    }
+    function cura(){
+        console.log("Cura")
+    }
+    function obito(){
+        console.log("Óbito")
+    }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&callback=initMap" async defer></script>
 {% endblock %}

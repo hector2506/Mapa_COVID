@@ -235,6 +235,21 @@ margin
     autocomplete.setFields(
       ['address_components', 'geometry', 'icon', 'name']);
 
+    // Delimitar as áreas das UBS no mapa
+    let ubsCoordenadas = []
+    {% for g in ubs_mapa %}
+    ubsCoordenadas.push("{{g.coordenadas}}")
+    {% endfor %}
+    for (let i in ubsCoordenadas) {
+      var ubs_poligono = criaPoligono(buildCoordinatesArrayFromString(ubsCoordenadas[i]), '#00cc00')
+      ubs_poligono.setMap(map);
+      ubs_poligono.addListener('click', function (e) {
+        placeMarkerAndPanTo(e.latLng, map)
+        $("#id_latitude").val(e.latLng.lat());
+        $("#id_longitude").val(e.latLng.lng());
+      });
+    }
+
     var infowindow = new google.maps.InfoWindow();
     var infowindowContent = document.getElementById('infowindow-content');
     infowindow.setContent(infowindowContent);
@@ -302,6 +317,36 @@ margin
       infowindow.open(map, marker);
     });
 
+  }
+
+  // Função que monta um array com longitude e latitude com base numa string com as coordenadas
+  function buildCoordinatesArrayFromString(CoordenadasString) {
+    var finalData = []; // Array com latitude e longitude 
+    var grouped = CoordenadasString.split("                 "); // Cria um array de substrings divididas a partir do espaço usando a função split()
+
+    // Função que é responsável por separar a latitude e a longitude e depois depositar cada instância no array finalData
+    grouped.forEach(function (item, i) { // percorre cada elemento do array grouped usando o forEach
+      let a = item.trim().split(','); // trim() serve para elimitar os espaços e o split serve para criar um array de substrings divididas a partir da vírgula, separando lat e lng
+      // coloca o novo elemento com lgn e lat no array de coordenadas
+      finalData.push({
+        lng: parseFloat(a[0]),
+        lat: parseFloat(a[1])
+      });
+    });
+
+    // Retorna o array com todas as coordenadas devidamente organizadas
+    return finalData;
+  }
+
+  function criaPoligono(path, cor) {
+    var ubs_poligono = new google.maps.Polygon({
+      paths: path,
+      strokeColor: cor,
+      strokeOpacity: 1.5,
+      strokeWeight: 2,
+      fillOpacity: 0
+    });
+    return ubs_poligono
   }
 
 </script>

@@ -70,9 +70,11 @@ def novo_paciente(request):
             return redirect('patient:novo_notificacao')
     else:
         form = PacienteRegisterForm()
+    ubs_mapa = get_list_or_404(Estabelecimento)
     env = os.environ
     GOOGLE_API_KEY = env.get('GOOGLE_API_KEY')
     context = {
+        'ubs_mapa': ubs_mapa,
         'google_api_key': GOOGLE_API_KEY,
         'form': form
     }
