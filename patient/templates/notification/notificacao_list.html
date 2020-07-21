@@ -38,6 +38,9 @@ background-color: white;
 <li class="nav-item active">
     <a class="nav-link" href="{% url 'patient:notificacao_list' %}">Notificações</a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'site_mapa:mapa' %}">Consultar o Mapa</a>
+</li>
 {% endblock %}
 {% block body %}
 <div style="text-align: center">
@@ -148,53 +151,11 @@ background-color: white;
                     Pacientes
                 </button>
             </form>
-            <button type="button" class="btn btn-info btn-lg" id="ButtonMapa" data-toggle="modal"
-                data-target="#modal_mapa">Consultar o Mapa</button>
-            <div class="modal fade" id="modal_mapa">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">Consultar o mapa por:</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <form action="{% url 'site_mapa:mapa' %}" method="POST">
-                            {% csrf_token %}
-                            <!-- Modal body -->
-                            <div class="modal-body">
-
-                                <div class="form-check-inline">
-                                    <label class="form-check-label" for="escolha">
-                                        <input type="radio" class="form-check-input" id="escolha" name="escolha"
-                                            value="endereco_paciente" checked>
-                                        Endereço dos pacientes
-                                    </label>
-                                </div>
-                                <div class="form-check-inline">
-                                    <label class="form-check-label" for="escolha">
-                                        <input type="radio" class="form-check-input" id="escolha" name="escolha"
-                                            value="area_ubs">
-                                        Área das UBS
-                                    </label>
-                                </div>
-
-                            </div>
-
-                            <!-- Modal footer -->
-                            <div class="modal-footer">
-                                <div class="btn-group" role="group" aria-label="Basic example" style="margin: 0 auto">
-                                    <button type="submit" class="btn btn-primary" name="notificacao_valor"
-                                        id="ButtonModal" value="">
-                                        Consultar
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
+            <form action="{% url 'site_mapa:mapa' %}" method="GET">
+                <button type="submit" id="ButtonMapa" class="btn btn-info btn-lg">
+                    Consultar o Mapa
+                </button>
+            </form>
         </div>
     </div>
 </div>
