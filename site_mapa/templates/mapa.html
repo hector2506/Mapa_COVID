@@ -95,8 +95,14 @@ background-color: #800080;
                 lat: -5.0364390,
                 lng: -42.822612
             },
-            zoom: 13,
-            mapTypeId: 'roadmap'
+            zoom: 11,
+            mapTypeId: 'roadmap',
+            zoomControl: true,
+            mapTypeControl: false,
+            scaleControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: true
         });
         map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById('helptext'));
         var infowindow = new google.maps.InfoWindow(); //Cria a janela de informação usada para a área da ubs
